@@ -54,7 +54,7 @@ public class ItemController {
     public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
         if (itemRepository.existsById(id)) {
             itemRepository.deleteById(id);
-            return ResponseEntity.noContent().build(); // 204 No Content
+            return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
