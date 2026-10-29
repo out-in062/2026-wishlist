@@ -1,87 +1,58 @@
 body {
-    font-family: sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 20px;
+    background-color: #ffffff;
+    color: #000000;
+    font-family: monospace;
+    margin: 20px;
 }
 
-.container {
-    max-width: 800px;
-    margin: 0 auto;
+fieldset {
+    margin-bottom: 15px;
+    padding: 10px;
 }
 
-h1, h2 {
-    color: #333;
+.form-row {
+    margin-bottom: 8px;
 }
 
-.card {
-    background: #fff;
-    padding: 20px;
-    margin-bottom: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.form-group {
-    margin-bottom: 12px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 4px;
-    font-weight: bold;
-}
-
-.form-group input {
-    padding: 6px;
-    width: 100%;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.form-row label {
+    display: inline-block;
+    width: 60px;
+    text-align: right;
+    margin-right: 8px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
     margin-top: 10px;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
+    border-collapse: collapse;
 }
 
 th, td {
-    padding: 8px;
+    padding: 4px 8px;
     text-align: left;
 }
 
-th {
-    background-color: #f2f2f2;
+table a {
+    text-decoration: none;
+    color: #0000ee;
 }
 
-.btn {
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+table a:hover {
+    text-decoration: underline;
 }
 
-.btn-primary {
-    background-color: #007bff;
-    color: white;
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
 }
 
-.btn-secondary {
-    background-color: #6c757d;
-    color: white;
-}
-
-.btn-danger {
-    background-color: #dc3545;
-    color: white;
-}
-
-.btn-sm {
-    padding: 3px 6px;
-    font-size: 12px;
+.modal-content {
+    background-color: #ffffff;
+    border: 1px solid #000000;
+    width: 320px;
+    margin: 100px auto;
+    padding: 15px;
 }
