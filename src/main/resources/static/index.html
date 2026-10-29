@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>欲しいものリスト</title>
+    <title>欲しいものリスト - 登録・一覧・編集</title>
 </head>
 <body>
 <h1>欲しいものリスト</h1>
@@ -29,6 +29,30 @@
 
 <hr>
 
+<!-- 編集フォーム（初期は非表示） -->
+<section id="edit-section" style="display:none; background:#eee; padding:10px;">
+    <h2>アイテムを編集</h2>
+    <form id="edit-form">
+        <input type="hidden" id="edit-id">
+        <div>
+            <label>名前: <input type="text" id="edit-name" required></label>
+        </div>
+        <div>
+            <label>価格: <input type="number" id="edit-price"></label>
+        </div>
+        <div>
+            <label>URL: <input type="text" id="edit-url"></label>
+        </div>
+        <div>
+            <label>メモ: <input type="text" id="edit-memo"></label>
+        </div>
+        <button type="submit">更新する</button>
+        <button type="button" onclick="cancelEdit()">キャンセル</button>
+    </form>
+</section>
+
+<hr>
+
 <!-- 一覧表示 -->
 <section>
     <h2>欲しいもの一覧</h2>
@@ -41,9 +65,11 @@
             <th>価格</th>
             <th>URL</th>
             <th>メモ</th>
+            <th>操作</th>
         </tr>
         </thead>
         <tbody id="item-list">
+        <!-- JavaScriptで動的に挿入されます -->
         </tbody>
     </table>
 </section>
@@ -51,11 +77,12 @@
 <script>
     const API_URL = '/api/notes';
 
+    // ページ読み込み時に一覧を取得
     window.onload = () => {
         fetchItems();
     };
 
-    // 1. 全件取得
+    // 1. 全件取得 (GET)
     async function fetchItems() {
         try {
             const response = await fetch(API_URL);
@@ -71,6 +98,9 @@
                         <td>${item.price || ''}</td>
                         <td><a href="${item.url || '#'}" target="_blank">${item.url || ''}</a></td>
                         <td>${item.memo || ''}</td>
+                        <td>
+                            <button onclick="editItem(${item.id}, '${item.name}', ${item.price || 0}, '${item.url || ''}', '${item.memo || ''}')">編集</button>
+                        </td>
                     `;
                 tbody.appendChild(tr);
             });
@@ -79,7 +109,7 @@
         }
     }
 
-    // 2. 登録
+    // 2. 登録 (POST)
     document.getElementById('add-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const newItem = {
@@ -96,6 +126,43 @@
         });
 
         document.getElementById('add-form').reset();
+        fetchItems();
+    });
+
+    // 編集フォームにデータをセットする
+    function editItem(id, name, price, url, memo) {
+        document.getElementById('edit-section').style.display = 'block';
+        document.getElementById('edit-id').value = id;
+        document.getElementById('edit-name').value = name;
+        document.getElementById('edit-price').value = price || '';
+        document.getElementById('edit-url').value = url === 'null' ? '' : url;
+        document.getElementById('edit-memo').value = memo === 'null' ? '' : memo;
+    }
+
+    // 編集をキャンセルする
+    function cancelEdit() {
+        document.getElementById('edit-section').style.display = 'none';
+        document.getElementById('edit-form').reset();
+    }
+
+    // 4. 更新 (PUT)
+    document.getElementById('edit-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('edit-id').value;
+        const updatedItem = {
+            name: document.getElementById('edit-name').value,
+            price: document.getElementById('edit-price').value ? Number(document.getElementById('edit-price').value) : null,
+            url: document.getElementById('edit-url').value,
+            memo: document.getElementById('edit-memo').value
+        };
+
+        await fetch(`${API_URL}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedItem)
+        });
+
+        cancelEdit();
         fetchItems();
     });
 </script>
