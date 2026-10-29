@@ -12,18 +12,22 @@
 <fieldset>
     <legend>新しいアイテムの登録</legend>
     <form id="add-form">
-        <p>
-            <label>名前: <input type="text" id="name" required></label>
-        </p>
-        <p>
-            <label>価格: <input type="number" id="price"></label>
-        </p>
-        <p>
-            <label>URL: <input type="text" id="url"></label>
-        </p>
-        <p>
-            <label>メモ: <input type="text" id="memo"></label>
-        </p>
+        <div class="form-row">
+            <label>名前:</label>
+            <input type="text" id="name" required>
+        </div>
+        <div class="form-row">
+            <label>価格:</label>
+            <input type="number" id="price">
+        </div>
+        <div class="form-row">
+            <label>URL:</label>
+            <input type="text" id="url">
+        </div>
+        <div class="form-row">
+            <label>メモ:</label>
+            <input type="text" id="memo">
+        </div>
         <button type="submit">登録</button>
     </form>
 </fieldset>
@@ -37,7 +41,6 @@
     <table border="1">
         <thead>
         <tr>
-            <th>ID</th>
             <th>名前</th>
             <th>価格</th>
             <th>URL</th>
@@ -56,18 +59,22 @@
         <h3>アイテムの編集</h3>
         <form id="edit-form">
             <input type="hidden" id="edit-id">
-            <p>
-                <label>名前: <input type="text" id="edit-name" required></label>
-            </p>
-            <p>
-                <label>価格: <input type="number" id="edit-price"></label>
-            </p>
-            <p>
-                <label>URL: <input type="text" id="edit-url"></label>
-            </p>
-            <p>
-                <label>メモ: <input type="text" id="edit-memo"></label>
-            </p>
+            <div class="form-row">
+                <label>名前:</label>
+                <input type="text" id="edit-name" required>
+            </div>
+            <div class="form-row">
+                <label>価格:</label>
+                <input type="number" id="edit-price">
+            </div>
+            <div class="form-row">
+                <label>URL:</label>
+                <input type="text" id="edit-url">
+            </div>
+            <div class="form-row">
+                <label>メモ:</label>
+                <input type="text" id="edit-memo">
+            </div>
             <button type="submit">保存</button>
             <button type="button" onclick="closeEditModal()">キャンセル</button>
         </form>
@@ -90,11 +97,12 @@
             tbody.innerHTML = '';
 
             items.forEach(item => {
+                const formattedPrice = item.price ? Number(item.price).toLocaleString() + '円' : '';
+
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
-                        <td>${item.id}</td>
                         <td>${item.name}</td>
-                        <td>${item.price || ''}</td>
+                        <td>${formattedPrice}</td>
                         <td><a href="${item.url || '#'}" target="_blank">${item.url || ''}</a></td>
                         <td>${item.memo || ''}</td>
                         <td>
@@ -151,7 +159,7 @@
             name: document.getElementById('edit-name').value,
             price: document.getElementById('edit-price').value ? Number(document.getElementById('edit-price').value) : null,
             url: document.getElementById('edit-url').value,
-            memo: document.getElementById('memo').value
+            memo: document.getElementById('edit-memo').value
         };
 
         await fetch(`${API_URL}/${id}`, {
