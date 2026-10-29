@@ -2,87 +2,92 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>欲しいものリスト - 登録・一覧・編集</title>
+    <title>欲しいものリスト</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>欲しいものリスト</h1>
+<div class="container">
+    <h1>欲しいものリスト</h1>
 
-<!-- 登録フォーム -->
-<section>
-    <h2>新しいアイテムを追加</h2>
-    <form id="add-form">
-        <div>
-            <label>名前: <input type="text" id="name" required></label>
-        </div>
-        <div>
-            <label>価格: <input type="number" id="price"></label>
-        </div>
-        <div>
-            <label>URL: <input type="text" id="url"></label>
-        </div>
-        <div>
-            <label>メモ: <input type="text" id="memo"></label>
-        </div>
-        <button type="submit">登録する</button>
-    </form>
-</section>
+    <!-- 登録フォーム -->
+    <div class="card">
+        <h2>新しいアイテムを追加</h2>
+        <form id="add-form">
+            <div class="form-group">
+                <label>名前:</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label>価格:</label>
+                <input type="number" id="price">
+            </div>
+            <div class="form-group">
+                <label>URL:</label>
+                <input type="text" id="url">
+            </div>
+            <div class="form-group">
+                <label>メモ:</label>
+                <input type="text" id="memo">
+            </div>
+            <button type="submit" class="btn btn-primary">登録する</button>
+        </form>
+    </div>
 
-<hr>
+    <!-- 編集フォーム -->
+    <div id="edit-section" class="card" style="display:none; background:#fffbe6;">
+        <h2>アイテムを編集</h2>
+        <form id="edit-form">
+            <input type="hidden" id="edit-id">
+            <div class="form-group">
+                <label>名前:</label>
+                <input type="text" id="edit-name" required>
+            </div>
+            <div class="form-group">
+                <label>価格:</label>
+                <input type="number" id="edit-price">
+            </div>
+            <div class="form-group">
+                <label>URL:</label>
+                <input type="text" id="edit-url">
+            </div>
+            <div class="form-group">
+                <label>メモ:</label>
+                <input type="text" id="edit-memo">
+            </div>
+            <button type="submit" class="btn btn-primary">更新する</button>
+            <button type="button" onclick="cancelEdit()" class="btn btn-secondary">キャンセル</button>
+        </form>
+    </div>
 
-<!-- 編集フォーム（初期は非表示） -->
-<section id="edit-section" style="display:none; background:#eee; padding:10px;">
-    <h2>アイテムを編集</h2>
-    <form id="edit-form">
-        <input type="hidden" id="edit-id">
-        <div>
-            <label>名前: <input type="text" id="edit-name" required></label>
-        </div>
-        <div>
-            <label>価格: <input type="number" id="edit-price"></label>
-        </div>
-        <div>
-            <label>URL: <input type="text" id="edit-url"></label>
-        </div>
-        <div>
-            <label>メモ: <input type="text" id="edit-memo"></label>
-        </div>
-        <button type="submit">更新する</button>
-        <button type="button" onclick="cancelEdit()">キャンセル</button>
-    </form>
-</section>
-
-<hr>
-
-<!-- 一覧表示 -->
-<section>
-    <h2>欲しいもの一覧</h2>
-    <button onclick="fetchItems()">リストを更新</button>
-    <table border="1">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>名前</th>
-            <th>価格</th>
-            <th>URL</th>
-            <th>メモ</th>
-            <th>操作</th>
-        </tr>
-        </thead>
-        <tbody id="item-list">
-        <!-- JavaScriptで動的に挿入されます -->
-        </tbody>
-    </table>
-</section>
+    <!-- 一覧表示 -->
+    <div class="card">
+        <h2>欲しいもの一覧</h2>
+        <button onclick="fetchItems()" class="btn btn-secondary">リストを更新</button>
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>名前</th>
+                <th>価格</th>
+                <th>URL</th>
+                <th>メモ</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="item-list">
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script>
     const API_URL = '/api/notes';
 
-    // ページ読み込み時に一覧を取得
     window.onload = () => {
         fetchItems();
     };
 
-    // 1. 全件取得 (GET)
+    // 1. 全件取得
     async function fetchItems() {
         try {
             const response = await fetch(API_URL);
@@ -99,7 +104,8 @@
                         <td><a href="${item.url || '#'}" target="_blank">${item.url || ''}</a></td>
                         <td>${item.memo || ''}</td>
                         <td>
-                            <button onclick="editItem(${item.id}, '${item.name}', ${item.price || 0}, '${item.url || ''}', '${item.memo || ''}')">編集</button>
+                            <button onclick="editItem(${item.id}, '${item.name}', ${item.price || 0}, '${item.url || ''}', '${item.memo || ''}')" class="btn btn-sm btn-primary">編集</button>
+                            <button onclick="deleteItem(${item.id})" class="btn btn-sm btn-danger">削除</button>
                         </td>
                     `;
                 tbody.appendChild(tr);
@@ -109,7 +115,7 @@
         }
     }
 
-    // 2. 登録 (POST)
+    // 2. 登録
     document.getElementById('add-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const newItem = {
@@ -129,7 +135,6 @@
         fetchItems();
     });
 
-    // 編集フォームにデータをセットする
     function editItem(id, name, price, url, memo) {
         document.getElementById('edit-section').style.display = 'block';
         document.getElementById('edit-id').value = id;
@@ -137,15 +142,15 @@
         document.getElementById('edit-price').value = price || '';
         document.getElementById('edit-url').value = url === 'null' ? '' : url;
         document.getElementById('edit-memo').value = memo === 'null' ? '' : memo;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // 編集をキャンセルする
     function cancelEdit() {
         document.getElementById('edit-section').style.display = 'none';
         document.getElementById('edit-form').reset();
     }
 
-    // 4. 更新 (PUT)
+    // 4. 更新
     document.getElementById('edit-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('edit-id').value;
@@ -165,6 +170,13 @@
         cancelEdit();
         fetchItems();
     });
+
+    // 5. 削除
+    async function deleteItem(id) {
+        if (!confirm('本当に削除しますか？')) return;
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        fetchItems();
+    }
 </script>
 </body>
 </html>
